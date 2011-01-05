@@ -1,0 +1,13 @@
+#cat=config/mobile; type=string; label=LLL:EXT:mobile/locallang.xml:MobileURL
+MobileURL = mobile.chandanweb.com
+
+#cat=config/mobile; type=string; label=LLL:EXT:mobile/locallang.xml:MobileVersionType
+MobileVersionType = 662
+
+#cat=config/mobile; type=string; label=LLL:EXT:mobile/locallang.xml:enableLogging
+EnableLogging = 0
+
+TSConstantEditor.config {
+  description = <span style="padding:1px 2px; background:red; color:#fff; font-weight:bold;">1. IMPORTANT : </span> You may need devLog for the logging features to work.
+  1 = MobileURL
+}

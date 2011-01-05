@@ -1,0 +1,12 @@
+#this is an example TypoScript for the mobile version.
+mobile < page
+mobile {
+  typeNum = 662
+  config {    
+    linkVars = L, type
+  }
+  
+}
+[globalVar=GP:type=662]
+plugin.tx_cssstyledcontent._CSS_DEFAULT_STYLE >
+[global]

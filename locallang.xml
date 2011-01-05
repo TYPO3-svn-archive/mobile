@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description>language labels for extension Mobile Version</description>
+		<type>module</type>
+		<csh_table></csh_table>
+		<fileId>EXT:mobile/locallang.xml</fileId>
+		<labelContext type="array">
+			<label index="pi_title"></label>
+			<label index="pi_plus_wiz_description"></label>
+		</labelContext>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="MobileURL">URL of mobile version</label>
+			<label index="MobileVersionType">Type of mobile version</label>
+			<label index="enableLogging">Enable Logging</label>
+		</languageKey>
+	</data>
+	
+</T3locallang>
