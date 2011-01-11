@@ -46,6 +46,7 @@ class tx_mobile_pi1 extends tslib_pibase {
 	private $mobileVersionType ;
 	private $curHOST;
 	private $curTYPE;
+	private $confArr;
 	
 	/**
 	 * The main method of the PlugIn
@@ -59,9 +60,9 @@ class tx_mobile_pi1 extends tslib_pibase {
 			Here is the TypoScript passed to the method:'.
 					t3lib_div::view_array($conf);
 					*/
-		$confArr = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
-		$this->mobileUrl = $confArr['MobileURL'];
-		$this->mobileVersionType = $confArr['MobileVersionType'];
+		$this->confArr = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+		$this->mobileUrl = $this->confArr['MobileURL'];
+		$this->mobileVersionType = $this->confArr['MobileVersionType'];
 		$this->curHOST = t3lib_div::getIndpEnv("HTTP_HOST");
 		$this->curTYPE= t3lib_div::_GP("type");
 		
@@ -71,33 +72,40 @@ class tx_mobile_pi1 extends tslib_pibase {
 	private function goMobile(){
 
 		$goMobile = true;		
-		
+		$mobileDeviceFound = $this->isMobileDevice();
+		if($this->confArr['EnableLogging']){
+			t3lib_div::devLog('','mobile' , 0, array($this->curHOST, $this->curTYPE, $_SERVER , $mobileDeviceFound , $this->confArr ));
+		}
+
 		//if we are already on the mobile version, then we should not re-direct to mobile version again
 		//if( $this->curHOST == $this->mobileUrl && $this->curTYPE == $this->mobileVersionType && $this->isMobileDevice() )
-		if( $this->curHOST == $this->mobileUrl && $this->curTYPE == $this->mobileVersionType && $this->isMobileDevice() ){
+		if( $this->curHOST == $this->mobileUrl && $this->curTYPE == $this->mobileVersionType && $mobileDeviceFound  ){
 			$GLOBALS["TSFE"]->fe_user->setKey('ses','tx_mobile_gomobile',TRUE);
 			//$_SESSION[$this->mobileUrl.'tx_mobile_gomobile'] = 'true';					
 			return;
 		}
 		
-		$sessionData = $GLOBALS["TSFE"]->fe_user->getKey('ses','tx_mobile_gomobile');
+		$sessionData = $GLOBALS["TSFE"]->fe_user->getKey('ses','tx_mobile_viewnormal');
 		
 		if( isset($_GET['goMobile']) && $_GET['goMobile'] == 'false' ){
 			$goMobile = FALSE;			
-		}elseif( isset($_GET['goMobile']) && $_GET['goMobile'] == 'true' ){
-			$goMobile = TRUE;
+		}elseif( (isset($_GET['goMobile']) && $_GET['goMobile'] == 'true' ) || $mobileDeviceFound ){
+			$goMobile = TRUE;			
 		}
-		if( $sessionData == FALSE){
+		if( $sessionData == TRUE){
 			$goMobile = FALSE;			
 		}
 
-		if($confArr['EnableLogging']){
-			t3lib_div::devLog('','mobile' , 0, array($goMobile,));
+		if($this->confArr['EnableLogging']){
+			t3lib_div::devLog('goMobile Val','mobile' , 0, array($goMobile, $sessionData));
 		}
 		//store session details		
-		$GLOBALS["TSFE"]->fe_user->setKey('ses','tx_mobile_gomobile',$goMobile);
+		$GLOBALS["TSFE"]->fe_user->setKey('ses','tx_mobile_viewnormal',$goMobile);
 		
-		if( $goMobile && $this->isMobileDevice() ){
+		if( $goMobile && $mobileDeviceFound  ){
+			if($this->confArr['EnableLogging']){
+				t3lib_div::devLog('redirecting','mobile' , 0, array('redirecting', "Location: http://" . $this->mobileUrl . '/?type=' . $this->mobileVersionType ));
+			}
 			header("Location: http://" . $this->mobileUrl . '/?type=' . $this->mobileVersionType);
 			exit;
 		}
