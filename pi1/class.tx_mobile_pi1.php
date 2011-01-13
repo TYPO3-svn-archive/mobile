@@ -79,7 +79,7 @@ class tx_mobile_pi1 extends tslib_pibase {
 
 		//if we are already on the mobile version, then we should not re-direct to mobile version again
 		//if( $this->curHOST == $this->mobileUrl && $this->curTYPE == $this->mobileVersionType && $this->isMobileDevice() )
-		if( $this->curHOST == $this->mobileUrl && $this->curTYPE == $this->mobileVersionType && $mobileDeviceFound  ){
+		if( $this->curHOST == $this->mobileUrl && ($this->curTYPE == $this->mobileVersionType || $this->mobileVersionType == 0) && $mobileDeviceFound  ){
 			$GLOBALS["TSFE"]->fe_user->setKey('ses','tx_mobile_gomobile',TRUE);
 			//$_SESSION[$this->mobileUrl.'tx_mobile_gomobile'] = 'true';					
 			return;
